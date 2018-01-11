@@ -3,8 +3,10 @@ const cache = {};
 
 function consistentReadAsync(filename, cb){
     if(cache[filename]){
+        console.log('from cache');
         process.nextTick(() => cb(cache[filename]));
     }else{
+        console.log('from file');
         fs.readFile(filename, 'utf8', (err, data) => {
             cache[filename] = data;
             cb(data);
@@ -35,3 +37,6 @@ reader1.onDataReady(data => {
         console.log('Reader2 reads ' + data);
     });
 });
+
+
+//50
