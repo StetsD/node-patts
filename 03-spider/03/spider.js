@@ -2,7 +2,7 @@ const request = require('request'),
     fs = require('fs'),
     mkdirp = require('mkdirp'),
     path = require('path'),
-    utilities = require('../01/utilities');
+    utilities = require('./utilities');
 
 function spiderLinks(currentUrl, body, nesting, cb){
     if(nesting === 0){
@@ -40,9 +40,9 @@ function spider(url, nesting, cb){
             }
             spiderLinks(url, body, nesting, cb);
         });
-    })
 
-    spiderLinks(url, body, nesting, cb);
+        spiderLinks(url, body, nesting, cb);
+    });
 }
 
 function download(url, filename, cb){
@@ -70,7 +70,7 @@ function saveFile(filename, contents, cb){
     });
 }
 
-spider(process.argv[2], (err, filename, downloaded) => {
+spider(process.argv[2], 3,  (err, filename, downloaded) => {
     if(err){
         console.log(err);
     }else if(downloaded){
