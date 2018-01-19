@@ -41,6 +41,8 @@ function spiderLinks(currentUrl, body, nesting){
     return promise;
 }
 
+//------------------------------------------------------------------------
+
 //OR PARALLEL VERSION
 function spiderLinks(currentUrl, body, nesting){
     if(nesting === 0){
@@ -51,7 +53,7 @@ function spiderLinks(currentUrl, body, nesting){
     return Promise.all(promises);
 }
 
-
+//------------------------------------------------------------------------
 
 // Promise implementation
 function download(url, filename){
@@ -71,8 +73,45 @@ function download(url, filename){
         });
 }
 
+//------------------------------------------------------------------------
+
+//Limit promises
+const TaskQueue = require('./taskQueue');
+const downloadQueue = new TaskQueue(2);
+function spiderLinks(currentUrl, body, nesting){
+    if(nesting === 0){
+        return Promises.resolve();
+    }
+
+    const links = utilities.getPageLinks(currentUrl, body);
+    if(links.length === 0){
+        return Promise.resolve();
+    }
+    return new Promise((resolve, reject) => {
+        let completed = 0;
+        let errored = false;
+        links.forEach(link => {
+            let task = () => {
+                return spider(link, nesting - 1)
+                    .then(()=>{
+                        if(++completed === links.length){
+                            resolve();
+                        }
+                    })
+                    .catch(()=>{
+                        if(!errored){
+                            errored = true;
+                            reject();
+                        }
+                    });
+            }
+            downloadQueue.pushTask(task);
+        });
+    });
+}
 
 
+//------------------------------------------------------------------------
 
 
 spider(process.argv[2], 1)
