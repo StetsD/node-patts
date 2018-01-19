@@ -50,3 +50,16 @@ function asyncDivision(dividend, divisor, cb){
         });
     });
 }
+
+asyncDivision(10, 2, (err, result) => {
+    if(err){
+        return console.error(err);
+    }
+    console.log(result);
+});
+
+asyncDivision(22, 11)
+    .then(res => console.log(res))
+    .catch(err => console.error(err));
+
+//----------------------------------------------------------
