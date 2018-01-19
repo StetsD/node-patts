@@ -11,9 +11,11 @@
   "dependencies": {
     "async": "^2.6.0",
     "cheerio": "^1.0.0-rc.2",
+    "co": "^4.6.0",
     "mkdirp": "^0.5.1",
     "request": "^2.83.0",
     "slug": "^0.9.1",
+    "thunkify": "^2.1.2",
     "url": "^0.11.0"
   }
 }
