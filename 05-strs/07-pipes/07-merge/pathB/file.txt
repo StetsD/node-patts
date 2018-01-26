@@ -1,0 +1,1 @@
+pathB/file.txt
