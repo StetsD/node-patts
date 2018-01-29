@@ -1,3 +1,4 @@
+//Composition style
 function createProxy(subject){
     const proto = Object.getPrototypeOf(subject);
 

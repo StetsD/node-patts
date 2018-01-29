@@ -1,0 +1,46 @@
+function createLoggingWritable(writableOrig){
+    const proto = Object.getPrototypeOf(writableOrig);
+
+    function LoggingWritable(writableOrig){
+        this.writableOrig = writableOrig;
+    }
+
+    LoggingWritable.prototype = Object.create(proto);
+
+    LoggingWritable.prototype.write = function(chunk, encoding, cb){
+        if(!cb && typeof encoding === 'function'){
+            cb = encoding;
+            encoding = undefined;
+        }
+
+        console.log('Writing', chunk);
+        return this.writableOrig.write(chunk, encoding, function(){
+            console.log('Finished writing ', chunk);
+            cb && cb();
+        });
+    };
+
+
+    //Delegate
+    LoggingWritable.prototype.on = function(){
+        return this.wirtableOrig.on
+            .apply(this.writableOrig, arguments);
+    };
+
+    LoggingWritable.prototype.end = function(){
+        return this.writableOrig.end
+            .apply(this.writableOrig, arguments);
+    };
+
+    return new LoggingWritable(writableOrig);
+}
+
+
+const fs = require('fs');
+
+const writable = fs.createWriteStream('test.txt');
+const writableProxy = createLoggingWritable(writable);
+writableProxy.write('First chunk');
+writableProxy.write('Second chunk');
+writable.write('This is not logged');
+writableProxy.end();
