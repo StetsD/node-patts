@@ -65,5 +65,5 @@ const invoker = new Invoker();
 const command = createSendStatusCmd(statusUpdateService, 'HI!');
 
 invoker.run(command);
-invoker.undo(command);
+invoker.undo();
 invoker.delay(command, 1000 * 60 * 60);
