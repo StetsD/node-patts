@@ -25,4 +25,16 @@ class ProcessPool {
 		this.active.push(worker);
 		process.nextTick(cb.bind(null, null, worker));
 	}
+
+	release(worker){
+		if(this.waiting.length > 0){
+			const waitingCallback = this.waiting.shift();
+			waitingCallback(null, worker);
+		}
+		this.active = this.active.filter(w => worker !== w);
+		this.pool.push(worker);
+	}
 }
+
+
+module.exports = ProcessPool;
